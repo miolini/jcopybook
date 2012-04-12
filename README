@@ -1,4 +1,5 @@
-JCopybook
+JCopybook,
+a COBOL CopyBook converter written in Java.
 
 Author: Artem V. Andreenko <miolini@gmail.com>
 Fork from: http://cb2xml.sourceforge.net/
