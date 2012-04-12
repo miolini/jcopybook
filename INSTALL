@@ -1,0 +1,11 @@
+Install instructions (at main directory level):
+
+1. For building and installing to local maven repo:
+
+	# mvn clean install
+
+2. For deploy new version to local file structure maven repo representation:
+	
+	# mvn clean deploy
+
+
