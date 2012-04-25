@@ -62,7 +62,9 @@ public class HashtableToMainframe {
 
 
 	private StringBuffer convertNode(Element element, String xpath) {
+		boolean isCondition = "condition".equals(element.getNodeName());
 		StringBuffer segment = new StringBuffer();
+		if (isCondition) return segment;
 		segment.append('0');
 		int position = Integer.parseInt(element.getAttribute("position"));
 		int length = Integer.parseInt(element.getAttribute("storage-length"));
@@ -72,11 +74,14 @@ public class HashtableToMainframe {
 			org.w3c.dom.Node node = nodeList.item(i);
 			if (node.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
 				Element childElement = (Element) node;
+				if ("condition".equals(childElement.getNodeName())) continue;
 				if (!childElement.getAttribute("level").equals("88")) {
 					String childElementName = childElement.getAttribute("name");
 					childElementCount++;
-					int childPosition = Integer.parseInt(childElement.getAttribute(
-							"position"));
+					int childPosition = -1;
+					if (!"condition".equals(childElement.getNodeName()))
+						childElementCount = Integer.parseInt(childElement.getAttribute(
+								"position"));
 					StringBuffer tempBuffer = null;
 					if (childElement.hasAttribute("occurs")) {
 						tempBuffer = new StringBuffer();
@@ -107,10 +112,10 @@ public class HashtableToMainframe {
 								replacePosition + tempBuffer.length(),
 								tempBuffer.toString());
 					} else {
-						if (tempBuffer.charAt(0) == '1') {
+						if (tempBuffer.length() > 0 && tempBuffer.charAt(0) == '1') {
 							segment.setCharAt(0, '1');
 						}
-						tempBuffer.deleteCharAt(0);
+						if (tempBuffer.length() > 0) tempBuffer.deleteCharAt(0);
 						segment.append(tempBuffer);
 					}
 				}
