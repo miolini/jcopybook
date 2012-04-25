@@ -9,11 +9,9 @@
 package net.sf.cb2xml.convert;
 
 import net.sf.cb2xml.util.XmlUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jcopybook.Utils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
+import org.w3c.dom.*;
 
 import java.io.BufferedReader;
 import java.io.Reader;
@@ -65,6 +63,7 @@ public class MainframeToXml {
 		int recordLength = Integer.parseInt(recordNode.getAttribute("storage-length"));
 
 		for (int offset = 0; offset < bufferLength; offset += recordLength) {
+			if ("true".equals(recordNode.getAttribute("redefined"))) continue;
 			Element resultTree = convertNode(recordNode, offset);
 			resultRoot.appendChild(resultTree);
 		}
@@ -73,10 +72,14 @@ public class MainframeToXml {
 	}
 
 	private Element convertNode(Element element, int offset) {
+		return convertNode(element, offset, -1);
+	}
+
+	private Element convertNode(Element element, int offset, int parentLength) {
 		String resultElementName = element.getAttribute("name");
 		Element resultElement = resultDocument.createElement(resultElementName);
 		int position = Integer.parseInt(element.getAttribute("position"));
-		int length = Integer.parseInt(element.getAttribute("storage-length"));
+		int length = parentLength != -1 ? parentLength : Integer.parseInt(element.getAttribute("storage-length"));
 		int childElementCount = 0;
 		NodeList nodeList = element.getChildNodes();
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -86,15 +89,25 @@ public class MainframeToXml {
 				if (!childElement.getAttribute("level").equals("88")) {
 					childElementCount++;
 					if (childElement.hasAttribute("occurs")) {
+						Node countNode = getElementByAttr(resultElement, "NAME", childElement.getAttribute("depending-on"));
 						int childOccurs = Integer.parseInt(childElement.getAttribute("occurs"));
-						int childPosition = Integer.parseInt(childElement.getAttribute(
-								"position"));
-						int childLength = Integer.parseInt(childElement.getAttribute(
-								"storage-length"));
+						boolean dependOn = StringUtils.isNotEmpty(childElement.getAttribute("depending-on"));
+						if (dependOn && countNode != null) {
+							childOccurs = Integer.valueOf(countNode.getFirstChild().getNodeValue());
+						}
+						int childPosition = Integer.parseInt(childElement.getAttribute("position"));
+						int childLength = Integer.parseInt(childElement.getAttribute("storage-length"));
 						int singleChildLength = childLength / childOccurs;
+						//int calcLen = getElementLength(childElement);
 						for (int j = 0; j < childOccurs; j++) {
-							resultElement.appendChild(convertNode(childElement,
-									childPosition + j * singleChildLength));
+							if (dependOn) {
+								//resultElement.appendChild(convertNode(childElement,
+								//		j * childPosition + j * singleChildLength, singleChildLength));
+								resultElement.appendChild(convertNode(childElement,
+										j * getChildsLength(childElement.getChildNodes()), singleChildLength));
+							} else
+								resultElement.appendChild(convertNode(childElement,
+										childPosition + j * singleChildLength));
 						}
 					} else {
 						resultElement.appendChild(convertNode(childElement, offset));
@@ -123,6 +136,48 @@ public class MainframeToXml {
 			//resultElement.setAttribute("length", length + "");
 		}
 		return resultElement;
+	}
+
+	private int getChildsLength(NodeList childNodes) {
+		int len = 0;
+		for (int i = 0; i < childNodes.getLength(); i++) {
+			len += getElementLength(childNodes.item(i));
+		}
+		return len;
+	}
+
+	private int getElementLength(Node node) {
+		if (!"item".equals(node.getNodeName())) return 0;
+		String attribute = getAttribute(node, "display-length");
+		int len = 0;
+		if (StringUtils.isNotEmpty(attribute))
+			len = Integer.parseInt(attribute);
+		String occurs = getAttribute(node, "occurs");
+
+		//for loop we check the childs
+		if(StringUtils.isNotEmpty(occurs)) {
+			NodeList childs = node.getChildNodes();
+			for (int i = 0; i < childs.getLength(); i++) {
+				len += getElementLength(childs.item(i));
+			}
+		}
+
+		return len;
+	}
+
+	private String getAttribute(Node node, String attrName) {
+		if (node.getAttributes() == null) return null;
+		Node attr = node.getAttributes().getNamedItem(attrName);
+		return attr != null ? attr.getNodeValue() : null;
+	}
+
+	private Node getElementByAttr(Node parent, String attrName, String attrValue) {
+		NodeList childs = parent.getChildNodes();
+		for (int i = 0; i < childs.getLength(); i++) {
+			Node node = childs.item(i);
+			if (attrValue.equals(node.getNodeName())) return node;
+		}
+		return null;
 	}
 
 }
