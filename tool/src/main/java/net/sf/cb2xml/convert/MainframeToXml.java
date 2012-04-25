@@ -31,6 +31,7 @@ public class MainframeToXml {
 
 	private String mainframeBuffer = null;
 	private Document resultDocument = null;
+	private int globalOffset;
 
 	private static String stripNullChars(String in) {
 		try {
@@ -64,22 +65,17 @@ public class MainframeToXml {
 
 		for (int offset = 0; offset < bufferLength; offset += recordLength) {
 			if ("true".equals(recordNode.getAttribute("redefined"))) continue;
-			Element resultTree = convertNode(recordNode, offset);
+			Element resultTree = convertNode(recordNode);
 			resultRoot.appendChild(resultTree);
 		}
 		resultDocument.appendChild(resultRoot);
 		return resultDocument;
 	}
 
-	private Element convertNode(Element element, int offset) {
-		return convertNode(element, offset, -1);
-	}
-
-	private Element convertNode(Element element, int offset, int parentLength) {
+	private Element convertNode(Element element) {
 		String resultElementName = element.getAttribute("name");
 		Element resultElement = resultDocument.createElement(resultElementName);
-		int position = Integer.parseInt(element.getAttribute("position"));
-		int length = parentLength != -1 ? parentLength : Integer.parseInt(element.getAttribute("storage-length"));
+		int length = Integer.parseInt(element.getAttribute("storage-length"));
 		int childElementCount = 0;
 		NodeList nodeList = element.getChildNodes();
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -97,44 +93,32 @@ public class MainframeToXml {
 						}
 						int childPosition = Integer.parseInt(childElement.getAttribute("position"));
 						int childLength = Integer.parseInt(childElement.getAttribute("storage-length"));
-						int singleChildLength = childLength / childOccurs;
-						//int calcLen = getElementLength(childElement);
 						for (int j = 0; j < childOccurs; j++) {
-							if (dependOn) {
-								//resultElement.appendChild(convertNode(childElement,
-								//		j * childPosition + j * singleChildLength, singleChildLength));
-								resultElement.appendChild(convertNode(childElement,
-										j * getChildsLength(childElement.getChildNodes()), singleChildLength));
-							} else
-								resultElement.appendChild(convertNode(childElement,
-										childPosition + j * singleChildLength));
+							resultElement.appendChild(convertNode(childElement));
 						}
 					} else {
-						resultElement.appendChild(convertNode(childElement, offset));
+						resultElement.appendChild(convertNode(childElement));
 					}
 				}
 			}
 		}
-		if (childElementCount == 0) {
-			if (offset > 0) {
-				position = position + offset;
-			}
+		if (childElementCount == 0 && !"true".equals(element.getAttribute("redefined"))) {
 			String text = null;
 			try {
-				text = mainframeBuffer.substring(position - 1, position + length - 1);
+				text = mainframeBuffer.substring(globalOffset, globalOffset + length);
+				globalOffset += length;
 			} catch (Exception e) {
 				System.err.println(e);
 				System.err.println("element = " + element.getAttribute("name"));
-				System.err.println("position = " + position);
+				System.err.println("globalOffset = " + globalOffset);
 				System.err.println("length = " + length);
 				System.err.println("Mainframe buffer length = " +
 						mainframeBuffer.length());
 			}
 			Text textNode = resultDocument.createTextNode(text);
 			resultElement.appendChild(textNode);
-			//resultElement.setAttribute("position", position + "");
-			//resultElement.setAttribute("length", length + "");
 		}
+
 		return resultElement;
 	}
 
@@ -155,7 +139,7 @@ public class MainframeToXml {
 		String occurs = getAttribute(node, "occurs");
 
 		//for loop we check the childs
-		if(StringUtils.isNotEmpty(occurs)) {
+		if (StringUtils.isNotEmpty(occurs)) {
 			NodeList childs = node.getChildNodes();
 			for (int i = 0; i < childs.getLength(); i++) {
 				len += getElementLength(childs.item(i));
