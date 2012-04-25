@@ -97,7 +97,8 @@ public class MainframeToXml {
 							resultElement.appendChild(convertNode(childElement));
 						}
 					} else {
-						resultElement.appendChild(convertNode(childElement));
+						if (!"item".equals(childElement.getAttribute("name")))
+							resultElement.appendChild(convertNode(childElement));
 					}
 				}
 			}
