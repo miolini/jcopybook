@@ -1,4 +1,6 @@
 .idea
 *.iml
 target
+tool/src/test/*
 maven-plugin
+maven-plugin-example
