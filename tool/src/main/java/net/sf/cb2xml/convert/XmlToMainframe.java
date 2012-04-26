@@ -9,6 +9,7 @@
 package net.sf.cb2xml.convert;
 
 import org.jcopybook.Marshaller;
+import org.jcopybook.Utils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -35,13 +36,16 @@ public class XmlToMainframe {
 
 	public String convert(Document sourceDocument, Document copyBookXml) {
 		return new Marshaller().process(sourceDocument, copyBookXml);
-//		Element documentElement = sourceDocument.getDocumentElement();
-//		Element element = Utils.getFirstElement(documentElement);
-//		String xpath = "/" + documentElement.getTagName() +
-//				"/" + element.getTagName();
-//		convertNode(element, xpath);
-//		FileUtils.writeFile(keyValuePairs.toString(), "hashtable.txt", false);
-//		return new HashtableToMainframe().convert(keyValuePairs, copyBookXml);
+	}
+
+	private String convertOld(Document sourceDocument, Document copyBookXml) {
+		Element documentElement = sourceDocument.getDocumentElement();
+		Element element = Utils.getFirstElement(documentElement);
+		String xpath = "/" + documentElement.getTagName() +
+				"/" + element.getTagName();
+		convertNode(element, xpath);
+		//FileUtils.writeFile(keyValuePairs.toString(), "hashtable.txt", false);
+		return new HashtableToMainframe().convert(keyValuePairs, copyBookXml);
 	}
 
 	private void convertNode(Element element, String xpath) {
