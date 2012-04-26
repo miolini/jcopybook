@@ -109,12 +109,12 @@ public class MainframeToXml {
 				text = mainframeBuffer.substring(globalOffset, globalOffset + length);
 				globalOffset += length;
 			} catch (Exception e) {
-				System.err.println(e);
-				System.err.println("element = " + element.getAttribute("name"));
-				System.err.println("globalOffset = " + globalOffset);
-				System.err.println("length = " + length);
-				System.err.println("Mainframe buffer length = " +
-						mainframeBuffer.length());
+//				System.err.println(e);
+//				System.err.println("element = " + element.getAttribute("name"));
+//				System.err.println("globalOffset = " + globalOffset);
+//				System.err.println("length = " + length);
+//				System.err.println("Mainframe buffer length = " +
+//						mainframeBuffer.length());
 			}
 			Text textNode = resultDocument.createTextNode(text);
 			resultElement.appendChild(textNode);
