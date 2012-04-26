@@ -61,7 +61,7 @@ public class MainframeToXml {
 
 		Element recordNode = Utils.getFirstElement(documentElement);
 		Element resultRoot = resultDocument.createElement(documentElement.getTagName());
-		int recordLength = Integer.parseInt(recordNode.getAttribute("storage-length"));
+		int recordLength = Integer.parseInt(recordNode.getAttribute("display-length"));
 
 		for (int offset = 0; offset < bufferLength; offset += recordLength) {
 			if ("true".equals(recordNode.getAttribute("redefined"))) continue;
@@ -75,7 +75,7 @@ public class MainframeToXml {
 	private Element convertNode(Element element) {
 		String resultElementName = element.getAttribute("name");
 		Element resultElement = resultDocument.createElement(resultElementName);
-		int length = Integer.parseInt(element.getAttribute("storage-length"));
+		int length = Integer.parseInt(element.getAttribute("display-length"));
 		int childElementCount = 0;
 		NodeList nodeList = element.getChildNodes();
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -91,8 +91,6 @@ public class MainframeToXml {
 						if (dependOn && countNode != null) {
 							childOccurs = Integer.valueOf(countNode.getFirstChild().getNodeValue());
 						}
-						int childPosition = Integer.parseInt(childElement.getAttribute("position"));
-						int childLength = Integer.parseInt(childElement.getAttribute("storage-length"));
 						for (int j = 0; j < childOccurs; j++) {
 							resultElement.appendChild(convertNode(childElement));
 						}
@@ -107,6 +105,12 @@ public class MainframeToXml {
 			String text = null;
 			try {
 				text = mainframeBuffer.substring(globalOffset, globalOffset + length);
+				if ("true".equals(element.getAttribute("numeric"))) {
+					if (StringUtils.isNotEmpty(element.getAttribute("scale"))) {
+						int scale = Integer.parseInt(element.getAttribute("scale"));
+						text = getDecimalValue(text, scale);
+					}
+				}
 				globalOffset += length;
 			} catch (Exception e) {
 //				System.err.println(e);
@@ -121,6 +125,10 @@ public class MainframeToXml {
 		}
 
 		return resultElement;
+	}
+
+	private String getDecimalValue(String text, int scale) {
+		return String.format("%s.%s", text.substring(0, text.length() - scale), text.substring(text.length() - scale));
 	}
 
 	private int getChildsLength(NodeList childNodes) {
