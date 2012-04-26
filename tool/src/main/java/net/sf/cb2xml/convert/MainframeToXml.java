@@ -82,7 +82,7 @@ public class MainframeToXml {
 			org.w3c.dom.Node node = nodeList.item(i);
 			if (node.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
 				Element childElement = (Element) node;
-				if (!childElement.getAttribute("level").equals("88")) {
+				if (!childElement.getAttribute("level").equals("88") && "item".equals(childElement.getNodeName())) {
 					childElementCount++;
 					if (childElement.hasAttribute("occurs")) {
 						Node countNode = getElementByAttr(resultElement, "NAME", childElement.getAttribute("depending-on"));
