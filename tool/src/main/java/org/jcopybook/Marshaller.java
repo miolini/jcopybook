@@ -69,11 +69,13 @@ public class Marshaller {
 		if (nodeMeta != null) {
 			int len = Integer.parseInt(nodeMeta.get("display-length"));
 			if ("true".equals(nodeMeta.get("numeric"))) {
-				int number = Integer.parseInt(value);
 				if (nodeMeta.containsKey("scale")) {
+					double number = Double.parseDouble(value);
 					int scale = Integer.parseInt(nodeMeta.get("scale"));
-					value = String.format(Locale.ENGLISH, String.format("%%.%df", scale), number / Math.pow(10, scale));
+					value = String.format(Locale.ENGLISH, String.format("%%.%df", scale), number);
+					value = value.replaceAll("\\.", "");
 				} else {
+					int number = Integer.parseInt(value);
 					String format = String.format("%%0%dd", len);
 					value = String.format(format, number);
 				}
