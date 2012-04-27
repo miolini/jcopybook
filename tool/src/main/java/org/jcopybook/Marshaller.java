@@ -6,6 +6,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class Marshaller {
@@ -54,17 +55,7 @@ public class Marshaller {
 			value = value.replaceAll("[\\r\\n]+", "");
 			String path = getPath(node);
 			Map<String, String> nodeMeta = meta.get(path);
-			if (nodeMeta != null) {
-				int len = Integer.parseInt(nodeMeta.get("display-length"));
-				if ("true".equals(nodeMeta.get("numeric"))) {
-					if (nodeMeta.containsKey("scale")) {
-
-					} else {
-						String format = String.format("%%0%dd", len);
-						value = String.format(format, Integer.parseInt(value));
-					}
-				}
-			}
+			value = handleType(value, nodeMeta);
 			out.append(value);
 			return;
 		}
@@ -72,6 +63,41 @@ public class Marshaller {
 		for (int i = 0; i < childs.getLength(); i++) {
 			iterate(childs.item(i), meta, out);
 		}
+	}
+
+	public static String handleType(String value, Map<String, String> nodeMeta) {
+		if (nodeMeta != null) {
+			int len = Integer.parseInt(nodeMeta.get("display-length"));
+			if ("true".equals(nodeMeta.get("numeric"))) {
+				int number = Integer.parseInt(value);
+				if (nodeMeta.containsKey("scale")) {
+					int scale = Integer.parseInt(nodeMeta.get("scale"));
+					value = String.format(Locale.ENGLISH, String.format("%%.%df", scale), number / Math.pow(10, scale));
+				} else {
+					String format = String.format("%%0%dd", len);
+					value = String.format(format, number);
+				}
+				if (value.length() < len) {
+					value = repeat("0", len - value.length()) + value;
+				}
+			} else if (value.length() < len) {
+				value += repeat(" ", len - value.length());
+			}
+			if (value.length() > len) {
+				throw new IllegalStateException(
+						String.format("value '%s' have length more than type: %d instead of %d", nodeMeta.get("name"),
+								value.length(), len));
+			}
+		}
+		return value;
+	}
+
+	public static String repeat(String symb, int num) {
+		StringBuilder buf = new StringBuilder();
+		for (int i = 0; i < num; i++) {
+			buf.append(symb);
+		}
+		return buf.toString();
 	}
 
 	private String getPathLayout(Node node) {
