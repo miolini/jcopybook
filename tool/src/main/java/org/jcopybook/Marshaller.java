@@ -28,7 +28,7 @@ public class Marshaller {
 
 	public String process(Document data) {
 		StringBuilder out = new StringBuilder();
-		iterate(data.getElementsByTagName("copybook").item(0).getFirstChild(), meta, out);
+		iterate(data.getElementsByTagName("copybook").item(0), meta, out);
 		return out.toString();
 	}
 
@@ -49,12 +49,21 @@ public class Marshaller {
 		}
 	}
 
+	private boolean isHaveNonTextChild(Node node) {
+		NodeList childs = node.getChildNodes();
+		for (int i = 0; i < childs.getLength(); i++) {
+			if (node.getNodeType() != Node.TEXT_NODE) return true;
+		}
+		return false;
+	}
+
 	private void iterate(Node node, Map<String, Map<String, String>> meta, StringBuilder out) {
-		if (node.getFirstChild() != null && node.getFirstChild().getNodeType() == Node.TEXT_NODE) {
-			String value = node.getFirstChild().getNodeValue();
+		String path = getPath(node);
+		Map<String, String> nodeMeta = meta.get(path);
+		if (nodeMeta != null && nodeMeta.containsKey("picture")) {
+			String value = node.getFirstChild() == null ? "" : node.getFirstChild().getNodeValue();
+			if (value == null) value = "";
 			value = value.replaceAll("[\\r\\n]+", "");
-			String path = getPath(node);
-			Map<String, String> nodeMeta = meta.get(path);
 			value = handleType(value, nodeMeta);
 			out.append(value);
 			return;
