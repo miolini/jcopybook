@@ -35,7 +35,7 @@ public class XmlToMainframe {
 	private Hashtable keyValuePairs = new Hashtable();
 
 	public String convert(Document sourceDocument, Document copyBookXml) {
-		return new Marshaller().process(sourceDocument, copyBookXml);
+		return new Marshaller(copyBookXml).process(sourceDocument);
 	}
 
 	private String convertOld(Document sourceDocument, Document copyBookXml) {
