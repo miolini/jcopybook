@@ -49,14 +49,6 @@ public class Marshaller {
 		}
 	}
 
-	private boolean isHaveNonTextChild(Node node) {
-		NodeList childs = node.getChildNodes();
-		for (int i = 0; i < childs.getLength(); i++) {
-			if (node.getNodeType() != Node.TEXT_NODE) return true;
-		}
-		return false;
-	}
-
 	private void iterate(Node node, Map<String, Map<String, String>> meta, StringBuilder out) {
 		String path = getPath(node);
 		Map<String, String> nodeMeta = meta.get(path);

@@ -9,8 +9,7 @@
 package net.sf.cb2xml.util;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,13 +20,11 @@ import java.io.InputStreamReader;
 */
 public class FileUtils {
   public static StringBuffer readFile(String fileName) {
-    File file = new File(fileName);
-    FileInputStream fis = null;
+    InputStream fis = ClassLoader.getSystemClassLoader().getResourceAsStream(fileName);
     BufferedReader buffer = null;
     StringBuffer sb = new StringBuffer();
     String s = null;
     try {
-      fis = new FileInputStream(file);
       buffer = new BufferedReader(new InputStreamReader(fis));
       while ( (s = buffer.readLine()) != null) {
         sb.append(s);
