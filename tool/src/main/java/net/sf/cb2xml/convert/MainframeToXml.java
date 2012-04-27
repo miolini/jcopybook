@@ -31,7 +31,7 @@ public class MainframeToXml {
 
 	private String mainframeBuffer = null;
 	private Document resultDocument = null;
-	private int globalOffset;
+	//private int globalOffset;
 
 	private static String stripNullChars(String in) {
 		try {
@@ -65,15 +65,19 @@ public class MainframeToXml {
 
 		for (int offset = 0; offset < bufferLength; offset += recordLength) {
 			if ("true".equals(recordNode.getAttribute("redefined"))) continue;
-			Element resultTree = convertNode(recordNode);
+			Element resultTree = convertNode(recordNode, new Context());
 			resultRoot.appendChild(resultTree);
 		}
 		resultDocument.appendChild(resultRoot);
 		return resultDocument;
 	}
 
-	private Element convertNode(Element element) {
-		String resultElementName = element.getAttribute("name");
+	private class Context {
+		public int offset;
+	}
+
+	private Element convertNode(Element element, Context context) {
+		String resultElementName = element.getAttribute("name").replaceAll("[^0-9^A-Z\\-]+", "||");
 		Element resultElement = resultDocument.createElement(resultElementName);
 		int length = Integer.parseInt(element.getAttribute("display-length"));
 		int childElementCount = 0;
@@ -92,11 +96,11 @@ public class MainframeToXml {
 							childOccurs = Integer.valueOf(countNode.getFirstChild().getNodeValue());
 						}
 						for (int j = 0; j < childOccurs; j++) {
-							resultElement.appendChild(convertNode(childElement));
+							resultElement.appendChild(convertNode(childElement, context));
 						}
 					} else {
 						if (!"item".equals(childElement.getAttribute("name")))
-							resultElement.appendChild(convertNode(childElement));
+							resultElement.appendChild(convertNode(childElement, context));
 					}
 				}
 			}
@@ -104,14 +108,14 @@ public class MainframeToXml {
 		if (childElementCount == 0 && !"true".equals(element.getAttribute("redefined"))) {
 			String text = null;
 			try {
-				text = mainframeBuffer.substring(globalOffset, globalOffset + length);
+				text = mainframeBuffer.substring(context.offset, context.offset + length);
 				if ("true".equals(element.getAttribute("numeric"))) {
 					if (StringUtils.isNotEmpty(element.getAttribute("scale"))) {
 						int scale = Integer.parseInt(element.getAttribute("scale"));
 						text = getDecimalValue(text, scale);
 					}
 				}
-				globalOffset += length;
+				context.offset += length;
 			} catch (Exception e) {
 //				System.err.println(e);
 //				System.err.println("element = " + element.getAttribute("name"));
