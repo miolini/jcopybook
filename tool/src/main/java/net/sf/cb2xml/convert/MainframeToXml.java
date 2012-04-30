@@ -114,7 +114,7 @@ public class MainframeToXml {
 						int scale = Integer.parseInt(element.getAttribute("scale"));
 						text = getDecimalValue(text, scale);
 					}
-				}
+				} else text = text.trim();
 				context.offset += length;
 			} catch (Exception e) {
 //				System.err.println(e);
