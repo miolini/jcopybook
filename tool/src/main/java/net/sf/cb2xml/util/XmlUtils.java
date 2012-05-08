@@ -20,7 +20,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.StringWriter;
 
@@ -55,8 +54,7 @@ public class XmlUtils {
 	public static Document fileToDom(String fileName) {
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			InputStream stream = ClassLoader.getSystemClassLoader().getResourceAsStream(fileName);
-			if (stream == null) throw new FileNotFoundException("resources not found: "+fileName);
+			InputStream stream = FileUtils.openFile(fileName);
 			return factory.newDocumentBuilder().parse(stream);
 		} catch (Exception e) {
 			e.printStackTrace();

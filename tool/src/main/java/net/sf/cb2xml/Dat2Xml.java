@@ -6,6 +6,8 @@ import net.sf.cb2xml.util.XmlUtils;
 
 import org.w3c.dom.Document;
 
+import java.io.FileNotFoundException;
+
 /**
  * Converts a .DAT (data) file + a XML copybook description into a XML data file.
  */
@@ -19,8 +21,7 @@ public class Dat2Xml
      * <li>DAT file containing data</li>
      * <li>XML file containing copybook</li>
      */
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) throws FileNotFoundException {
         if (args.length != 2) {
             System.err.println("Usage:\tdat2xml <dataFileName> <xmlCopybookFileName>");
             System.err.println();
