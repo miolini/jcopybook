@@ -52,13 +52,16 @@ public class Marshaller {
 	private void iterate(Node node, Map<String, Map<String, String>> meta, StringBuilder out) {
 		String path = getPath(node);
 		Map<String, String> nodeMeta = meta.get(path);
-		if (nodeMeta != null && nodeMeta.containsKey("picture")) {
-			String value = node.getFirstChild() == null ? "" : node.getFirstChild().getNodeValue();
-			if (value == null) value = "";
-			value = value.replaceAll("[\\r\\n]+", "");
-			value = handleType(value, nodeMeta);
-			out.append(value);
-			return;
+		if (nodeMeta != null) {
+			if ("true".equals(nodeMeta.containsKey("redefined"))) return;
+			else if (nodeMeta.containsKey("picture")) {
+				String value = node.getFirstChild() == null ? "" : node.getFirstChild().getNodeValue();
+				if (value == null) value = "";
+				value = value.replaceAll("[\\r\\n]+", "");
+				value = handleType(value, nodeMeta);
+				out.append(value);
+				return;
+			}
 		}
 		NodeList childs = node.getChildNodes();
 		for (int i = 0; i < childs.getLength(); i++) {
