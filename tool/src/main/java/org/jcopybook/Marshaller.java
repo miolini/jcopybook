@@ -53,7 +53,7 @@ public class Marshaller {
 		String path = getPath(node);
 		Map<String, String> nodeMeta = meta.get(path);
 		if (nodeMeta != null) {
-			if ("true".equals(nodeMeta.containsKey("redefined"))) return;
+			if ("true".equals(nodeMeta.get("redefined"))) return;
 			else if (nodeMeta.containsKey("picture")) {
 				String value = node.getFirstChild() == null ? "" : node.getFirstChild().getNodeValue();
 				if (value == null) value = "";
