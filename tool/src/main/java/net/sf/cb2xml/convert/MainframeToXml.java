@@ -16,6 +16,9 @@ import org.w3c.dom.*;
 import java.io.BufferedReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * routines to convert a copybook equivalent mainframe buffer into its XML form
@@ -31,6 +34,7 @@ public class MainframeToXml {
 
 	private String mainframeBuffer = null;
 	private Document resultDocument = null;
+	private Map<String, BigInteger> numerics = new HashMap<String, BigInteger>();
 	//private int globalOffset;
 
 	private static String stripNullChars(String in) {
@@ -89,11 +93,11 @@ public class MainframeToXml {
 				if (!childElement.getAttribute("level").equals("88") && "item".equals(childElement.getNodeName())) {
 					childElementCount++;
 					if (childElement.hasAttribute("occurs")) {
-						Node countNode = getElementByAttr(resultElement, "NAME", childElement.getAttribute("depending-on"));
-						int childOccurs = Integer.parseInt(childElement.getAttribute("occurs"));
 						boolean dependOn = StringUtils.isNotEmpty(childElement.getAttribute("depending-on"));
-						if (dependOn && countNode != null) {
-							childOccurs = Integer.valueOf(countNode.getFirstChild().getNodeValue());
+						BigInteger count = numerics.get(childElement.getAttribute("depending-on"));
+						int childOccurs = Integer.parseInt(childElement.getAttribute("occurs"));
+						if (dependOn && count != null) {
+							childOccurs = count.intValue();
 						}
 						for (int j = 0; j < childOccurs; j++) {
 							resultElement.appendChild(convertNode(childElement, context));
@@ -113,16 +117,16 @@ public class MainframeToXml {
 					if (StringUtils.isNotEmpty(element.getAttribute("scale"))) {
 						int scale = Integer.parseInt(element.getAttribute("scale"));
 						text = getDecimalValue(text, scale);
-					}
+					} else numerics.put(resultElementName, new BigInteger(text));
 				} else text = text.trim();
 				context.offset += length;
 			} catch (Exception e) {
-//				System.err.println(e);
-//				System.err.println("element = " + element.getAttribute("name"));
-//				System.err.println("globalOffset = " + globalOffset);
-//				System.err.println("length = " + length);
-//				System.err.println("Mainframe buffer length = " +
-//						mainframeBuffer.length());
+				System.err.println(e);
+				System.err.println("element = " + element.getAttribute("name"));
+				System.err.println("offset = " + context.offset);
+				System.err.println("length = " + length);
+				System.err.println("Mainframe buffer length = " +
+						mainframeBuffer.length());
 			}
 			Text textNode = resultDocument.createTextNode(text);
 			resultElement.appendChild(textNode);
