@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.jcopybook</groupId>
 	<artifactId>jcopybook-tool</artifactId>
-	<version>${parent.version}</version>
+	<version>1.0.7</version>
 	<packaging>bundle</packaging>
 
 	<parent>
