@@ -21,7 +21,7 @@ public class Dat2Xml
      * <li>DAT file containing data</li>
      * <li>XML file containing copybook</li>
      */
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws Exception {
         if (args.length != 2) {
             System.err.println("Usage:\tdat2xml <dataFileName> <xmlCopybookFileName>");
             System.err.println();
