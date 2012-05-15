@@ -4,13 +4,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.jcopybook</groupId>
 	<artifactId>jcopybook-tool</artifactId>
-	<version>1.0.6</version>
+	<version>${parent.version}</version>
 	<packaging>bundle</packaging>
 
 	<parent>
 		<groupId>org.jcopybook</groupId>
 		<artifactId>jcopybook-parent</artifactId>
-		<version>1.0.6</version>
+		<version>1.0.7</version>
 	</parent>
 
 	<dependencies>

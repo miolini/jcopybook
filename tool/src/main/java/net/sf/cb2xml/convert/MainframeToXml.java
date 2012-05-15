@@ -57,7 +57,7 @@ public class MainframeToXml {
 		}
 	}
 
-	public Document convert(String mainframeBuffer, Document copyBookXml) {
+	public Document convert(String mainframeBuffer, Document copyBookXml) throws Exception {
 		this.mainframeBuffer = stripNullChars(mainframeBuffer);
 		this.resultDocument = XmlUtils.getNewXmlDocument();
 		int bufferLength = mainframeBuffer.length();
@@ -80,7 +80,7 @@ public class MainframeToXml {
 		public int offset;
 	}
 
-	private Element convertNode(Element element, Context context) {
+	private Element convertNode(Element element, Context context) throws Exception {
 		String resultElementName = element.getAttribute("name").replaceAll("[^0-9^A-Z\\-]+", "||");
 		Element resultElement = resultDocument.createElement(resultElementName);
 		int length = Integer.parseInt(element.getAttribute("display-length"));
@@ -121,12 +121,12 @@ public class MainframeToXml {
 				} else text = text.trim();
 				context.offset += length;
 			} catch (Exception e) {
-				System.err.println(e);
 				System.err.println("element = " + element.getAttribute("name"));
 				System.err.println("offset = " + context.offset);
 				System.err.println("length = " + length);
 				System.err.println("Mainframe buffer length = " +
 						mainframeBuffer.length());
+				throw new Exception("can't parse copybook string", e);
 			}
 			Text textNode = resultDocument.createTextNode(text);
 			resultElement.appendChild(textNode);
