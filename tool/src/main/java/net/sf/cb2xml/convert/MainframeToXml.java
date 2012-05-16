@@ -121,11 +121,6 @@ public class MainframeToXml {
 				} else text = text.trim();
 				context.offset += length;
 			} catch (Exception e) {
-				System.err.println("element = " + element.getAttribute("name"));
-				System.err.println("offset = " + context.offset);
-				System.err.println("length = " + length);
-				System.err.println("Mainframe buffer length = " +
-						mainframeBuffer.length());
 				throw new Exception("can't parse copybook string", e);
 			}
 			Text textNode = resultDocument.createTextNode(text);
