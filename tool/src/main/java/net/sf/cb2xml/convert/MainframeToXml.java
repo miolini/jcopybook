@@ -121,7 +121,7 @@ public class MainframeToXml {
 				} else text = text.trim();
 				context.offset += length;
 			} catch (Exception e) {
-				throw new Exception("can't parse copybook string", e);
+				//throw new Exception("can't parse copybook string", e);
 			}
 			Text textNode = resultDocument.createTextNode(text);
 			resultElement.appendChild(textNode);
