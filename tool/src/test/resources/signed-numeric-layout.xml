@@ -1,0 +1,29 @@
+<copybook
+        filename="signed-numeric-layout.cpy">
+    <item display-length="55" level="01" name="MY-COPYBOOK" position="1" storage-length="55">
+        <item display-length="11" level="15" name="ATTR-X" numeric="true" picture="S9(7)V9(4)" position="1" scale="4"
+              signed="true" storage-length="11"/>
+        <item display-length="4" level="15" name="ATTR-Y" numeric="true" picture="S9(2)V9(2)" position="12" scale="2"
+              signed="true" storage-length="4"/>
+        <item display-length="4" level="15" name="ATTR-A" numeric="true" picture="S9(4)" position="16" signed="true"
+              storage-length="4"/>
+        <item display-length="4" level="15" name="ATTR-B" numeric="true" picture="S9(4)" position="20" signed="true"
+              storage-length="4"/>
+        <item display-length="4" level="15" name="ATTR-C" numeric="true" picture="S9(4)" position="24" signed="true"
+              storage-length="4"/>
+        <item display-length="4" level="15" name="ATTR-D" numeric="true" picture="S9(4)" position="28" signed="true"
+              storage-length="4"/>
+        <item display-length="4" level="15" name="ATTR-E" numeric="true" picture="S9(4)" position="32" signed="true"
+              storage-length="4"/>
+        <item display-length="4" level="15" name="ATTR-F" numeric="true" picture="S9(4)" position="36" signed="true"
+              storage-length="4"/>
+        <item display-length="4" level="15" name="ATTR-G" numeric="true" picture="S9(4)" position="40" signed="true"
+              storage-length="4"/>
+        <item display-length="4" level="15" name="ATTR-H" numeric="true" picture="S9(4)" position="44" signed="true"
+              storage-length="4"/>
+        <item display-length="4" level="15" name="ATTR-I" numeric="true" picture="S9(4)" position="48" signed="true"
+              storage-length="4"/>
+        <item display-length="4" level="15" name="ATTR-J" numeric="true" picture="S9(4)" position="52" signed="true"
+              storage-length="4"/>
+    </item>
+</copybook>

@@ -1,0 +1,16 @@
+<copybook>
+    <MY-COPYBOOK>
+        <ATTR-X>199999.7770</ATTR-X>
+        <ATTR-Y>-12.34</ATTR-Y>
+        <ATTR-A>1</ATTR-A>
+        <ATTR-B>2</ATTR-B>
+        <ATTR-C>3</ATTR-C>
+        <ATTR-D>-4</ATTR-D>
+        <ATTR-E>-5</ATTR-E>
+        <ATTR-F>-6</ATTR-F>
+        <ATTR-G>-7</ATTR-G>
+        <ATTR-H>-8</ATTR-H>
+        <ATTR-I>-9</ATTR-I>
+        <ATTR-J>-10</ATTR-J>
+    </MY-COPYBOOK>
+</copybook>
