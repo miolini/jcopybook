@@ -11,6 +11,7 @@ package net.sf.cb2xml.convert;
 import net.sf.cb2xml.util.FileUtils;
 import net.sf.cb2xml.util.XmlUtils;
 
+import org.jcopybook.JCopybookException;
 import org.w3c.dom.Document;
 
 /**
@@ -23,7 +24,7 @@ import org.w3c.dom.Document;
  */
 
 public class Convert {
-  public static void main(String[] args) {
+  public static void main(String[] args) throws JCopybookException {
     Document copyBookXml = XmlUtils.fileToDom(args[1]);
     Document sourceDocument = XmlUtils.fileToDom(args[0]);
     // params 1) XML source document 2) Copybook as XML

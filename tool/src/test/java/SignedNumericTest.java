@@ -1,6 +1,7 @@
 import net.sf.cb2xml.convert.MainframeToXml;
 import net.sf.cb2xml.util.FileUtils;
 import net.sf.cb2xml.util.XmlUtils;
+import org.jcopybook.JCopybookException;
 import org.jcopybook.Marshaller;
 import org.junit.Assert;
 import org.junit.Before;
@@ -43,7 +44,7 @@ public class SignedNumericTest extends Assert {
     }
 
     @Test
-    public void xml2ascii() {
+    public void xml2ascii() throws JCopybookException {
         Marshaller marshaller = new Marshaller();
         marshaller.setLayout(layout);
         String resultAscii = marshaller.process(dataXml);

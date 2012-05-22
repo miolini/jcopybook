@@ -8,6 +8,7 @@
 
 package net.sf.cb2xml.convert;
 
+import org.jcopybook.JCopybookException;
 import org.jcopybook.Marshaller;
 import org.jcopybook.Utils;
 import org.w3c.dom.Document;
@@ -34,7 +35,7 @@ public class XmlToMainframe {
 
 	private Hashtable keyValuePairs = new Hashtable();
 
-	public String convert(Document sourceDocument, Document copyBookXml) {
+	public String convert(Document sourceDocument, Document copyBookXml) throws JCopybookException {
 		return new Marshaller(copyBookXml).process(sourceDocument);
 	}
 

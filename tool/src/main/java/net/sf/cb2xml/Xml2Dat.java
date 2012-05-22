@@ -3,6 +3,7 @@ package net.sf.cb2xml;
 import net.sf.cb2xml.convert.XmlToMainframe;
 import net.sf.cb2xml.util.XmlUtils;
 
+import org.jcopybook.JCopybookException;
 import org.w3c.dom.Document;
 
 /**
@@ -18,7 +19,7 @@ public class Xml2Dat
      * <li>XML file containing data</li>
      * <li>XML file containing copybook</li>
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws JCopybookException {
         if (args.length != 2) {
             System.err.println("Usage:\txml2dat <xmlDataFileName> <copybookFileName>");
             System.err.println();
