@@ -15,6 +15,7 @@ public class JCopybookException extends Exception {
 	protected String layout;
 
 	public JCopybookException(String message, Throwable throwable, String contextIn, String contextOut, String elementName, String elementValue, Document layout) {
+		super(message, throwable);
 		this.contextIn = contextIn;
 		this.contextOut = contextOut;
 		this.elementName = elementName;
@@ -52,5 +53,17 @@ public class JCopybookException extends Exception {
 
 	public void setElementValue(String elementValue) {
 		this.elementValue = elementValue;
+	}
+
+	@Override
+	public String toString() {
+		return "JCopybookException{" +
+				"message='" + getMessage() + "\'\n" +
+				", contextIn='" + contextIn + "\'\n" +
+				", contextOut='" + contextOut + "\'\n" +
+				", elementName='" + elementName + "\'\n" +
+				", elementValue='" + elementValue + "\'\n" +
+				", layout='" + layout + "\'\n" +
+				'}';
 	}
 }
